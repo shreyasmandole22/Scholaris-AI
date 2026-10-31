@@ -1,0 +1,89 @@
+{
+    "chunks": [
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 0.0,
+            "end": 24.04,
+            "text": " Guys, in today's video, I will give you an exercise and whoever solves this exercise, I will give a shoutout to them.  So, write in the comment section, Challenge Accepted.  If you accept my challenge, I will give you a question and you have to solve it.  And it will be based on the concepts we have studied in the Sigma Web Development course.  So, I am very excited to give you a question."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 24.04,
+            "end": 45.0,
+            "text": " I hope you are equally excited.  Let's roll the intro.  So, guys, I am on my computer screen.  As you can see, if you have not accessed the playlist yet, then you can click here and bookmark this playlist.  Click here and save it."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 45.0,
+            "end": 61.0,
+            "text": " And if you have not accessed the code, then it is also updated on GitHub till video 11.  And I will keep updating as the videos move forward.  Now, the question I want to give you, I will make a folder first.  I will definitely keep the name of the folder as Video 12.  I will click on the shift right and open with code."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 61.0,
+            "end": 82.0,
+            "text": " And everyone is accepting this challenge.  If you accept, I will feel good from the heart.  What are you doing here that I will make an index.html here and I will give you a question.  So, the question is, you are given 12 video files.  12 files, 6 audio and 6 video."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 84.0,
+            "end": 105.0,
+            "text": " And 6 video.  Design a website using HTML only and which shows these 12 files.  I will do a little toggle word wrap here so that you can see.  So what you have to do is that you have been given 12 files.  And what is the name of those files?"
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 105.0,
+            "end": 123.0,
+            "text": " 1.mp3, 2.mp3.  So I will tell you what is the name of those files.  1.mp3, 2.mp3, all the way till 6.mp3.  These are your mp3 files.  Then you have 1.mp4, 2.mp4, all the way till 6.mp4."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 123.0,
+            "end": 137.0,
+            "text": " Okay, you have these files.  So all these files, these 12 files, you have to show by previewing.  So I hope it will be done.  It's a very simple question.  And you guys comment quickly and write Challenge Accepted."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 137.0,
+            "end": 153.0,
+            "text": " Because if you accept this challenge, then you write Challenge Accepted in the first time.  And whoever will give me their code here, I will give them a shoutout.  The one who writes Challenge Accepted will get a shoutout for sure.  And you guys tell me in the comment section.  So I hope you guys will complete it."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 153.0,
+            "end": 167.0,
+            "text": " And it's a very simple problem.  I know a lot of people will say that it's very simple.  One more thing I will expect from you guys is that you try to do.  Try to use all the concepts I have told you as much as possible.  In solving this question."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 167.0,
+            "end": 178.0,
+            "text": " So this was our question for today.  I hope you guys enjoyed it.  I will select it and do Ctrl Forward Slash.  And what happens by doing Ctrl Forward Slash?  You can uncomment or comment."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 178.0,
+            "end": 190.0,
+            "text": " So if I press Ctrl Forward Slash, then it will be uncomment.  And if I press Ctrl Forward Slash again, then it will be comment.  So you have to complete this website.  It's a very simple problem.  It's a straightforward problem."
+        },
+        {
+            "number": "12",
+            "titile": "Exercise 1 - Pure HTML Media Player",
+            "start": 190.0,
+            "end": 221.0,
+            "text": " Everyone must solve it.  So that's it for this video.  Thank you so much for watching this video.  And I will see you next time.  Music."
+        }
+    ],
+    "text": " Guys, in today's video, I will give you an exercise and whoever solves this exercise, I will give a shoutout to them. So, write in the comment section, Challenge Accepted. If you accept my challenge, I will give you a question and you have to solve it. And it will be based on the concepts we have studied in the Sigma Web Development course. So, I am very excited to give you a question. I hope you are equally excited. Let's roll the intro. So, guys, I am on my computer screen. As you can see, if you have not accessed the playlist yet, then you can click here and bookmark this playlist. Click here and save it. And if you have not accessed the code, then it is also updated on GitHub till video 11. And I will keep updating as the videos move forward. Now, the question I want to give you, I will make a folder first. I will definitely keep the name of the folder as Video 12. I will click on the shift right and open with code. And everyone is accepting this challenge. If you accept, I will feel good from the heart. What are you doing here that I will make an index.html here and I will give you a question. So, the question is, you are given 12 video files. 12 files, 6 audio and 6 video. And 6 video. Design a website using HTML only and which shows these 12 files. I will do a little toggle word wrap here so that you can see. So what you have to do is that you have been given 12 files. And what is the name of those files? 1.mp3, 2.mp3. So I will tell you what is the name of those files. 1.mp3, 2.mp3, all the way till 6.mp3. These are your mp3 files. Then you have 1.mp4, 2.mp4, all the way till 6.mp4. Okay, you have these files. So all these files, these 12 files, you have to show by previewing. So I hope it will be done. It's a very simple question. And you guys comment quickly and write Challenge Accepted. Because if you accept this challenge, then you write Challenge Accepted in the first time. And whoever will give me their code here, I will give them a shoutout. The one who writes Challenge Accepted will get a shoutout for sure. And you guys tell me in the comment section. So I hope you guys will complete it. And it's a very simple problem. I know a lot of people will say that it's very simple. One more thing I will expect from you guys is that you try to do. Try to use all the concepts I have told you as much as possible. In solving this question. So this was our question for today. I hope you guys enjoyed it. I will select it and do Ctrl Forward Slash. And what happens by doing Ctrl Forward Slash? You can uncomment or comment. So if I press Ctrl Forward Slash, then it will be uncomment. And if I press Ctrl Forward Slash again, then it will be comment. So you have to complete this website. It's a very simple problem. It's a straightforward problem. Everyone must solve it. So that's it for this video. Thank you so much for watching this video. And I will see you next time. Music."
+}

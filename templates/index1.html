@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scholaris AI | Academic Teaching Assistant</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #f3e9e1;
+    --sidebar: #ead8ca;
+    --panel: #fffaf6;
+    --card: #fffaf6;
+    --chip: #f6eee8;
+    --soft: #f2dfd1;
+    --border: #e4d1c3;
+    --text: #49372d;
+    --muted: #8f786a;
+    --accent: #b97852;
+    --accent-dark: #966044;
+    --shadow: 0 8px 28px rgba(110,75,53,.07);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow: hidden; }
+button, textarea { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+.app { display: flex; width: 100%; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar { width: 260px; min-width: 260px; height: 100%; padding: 27px 19px 20px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 20; transition: transform .3s ease; }
+.brand { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+.brand-icon { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; font-size: 22px; color: white; background: linear-gradient(135deg,#bd805b,#966044); box-shadow: 0 5px 20px rgba(150,96,68,.15); }
+.brand-name { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 14px; letter-spacing: .08em; color: var(--text); }
+.brand-sub { font-size: 9px; letter-spacing: .16em; margin-top: 4px; color: var(--muted); font-weight: 700; }
+.new-chat { width: 100%; padding: 13px 15px; border: 1px solid #d9b59d; border-radius: 11px; background: #f6eee8; color: #a66d50; font-weight: 700; font-size: 13px; text-align: left; transition: .2s ease; }
+.new-chat span { font-size: 18px; margin-right: 8px; }
+.new-chat:hover { background: #f2dfd1; transform: translateY(-1px); }
+.sidebar-bottom { margin-top: auto; }
+.system-card { padding: 16px; border: 1px solid var(--border); border-radius: 13px; background: var(--panel); }
+.system-title { font-size: 10px; font-weight: 800; letter-spacing: .12em; margin-bottom: 14px; color: var(--text); }
+.system-status { display: flex; align-items: center; font-size: 11px; color: var(--muted); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #50a77c; margin-right: 8px; flex-shrink: 0; }
+.sidebar-footer { text-align: center; font-size: 10px; line-height: 1.7; color: #987e6d; margin-top: 22px; }
+
+/* MAIN */
+.main { flex: 1; min-width: 0; height: 100%; display: flex; flex-direction: column; background: radial-gradient(ellipse at 75% 0%,rgba(185,120,82,.07),transparent 45%), var(--bg); }
+
+/* TOP HEADER */
+.topbar { height: 76px; min-height: 76px; padding: 0 34px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,250,246,.94); border-bottom: 1px solid var(--border); }
+.page-heading { font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 800; color: var(--text); }
+.page-subtitle { font-size: 11px; margin-top: 4px; color: var(--muted); }
+.top-right { display: flex; align-items: center; gap: 13px; }
+.model-badge { padding: 8px 13px; border: 1px solid var(--border); border-radius: 20px; background: #f6eee8; color: #98664b; font-size: 11px; font-weight: 700; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: linear-gradient(135deg,#bd805b,#966044); color: white; font-size: 13px; font-weight: 800; }
+.mobile-menu { display: none; border: 0; background: transparent; color: var(--text); font-size: 21px; }
+
+/* NAVIGATION */
+.tabs { height: 57px; min-height: 57px; padding: 0 34px; display: flex; align-items: center; gap: 5px; position: relative; background: var(--panel); border-bottom: 1px solid var(--border); }
+.tab { height: 37px; padding: 0 17px; position: relative; z-index: 1; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-size: 12px; font-weight: 700; transition: color .2s, background .2s; }
+.tab-ico { margin-right: 6px; font-size: 14px; }
+.tab.active { color: var(--accent-dark); background: rgba(185,120,82,.12); }
+.tab:hover { color: var(--text); background: rgba(185,120,82,.08); }
+
+/* VIEWS */
+.view { display: none; flex: 1; min-height: 0; overflow: hidden; }
+.view.active { display: flex; flex-direction: column; }
+
+/* HOME CHAT (compact so the search bar is always in view) */
+.chat-area { flex: 1; min-height: 0; overflow-y: auto; padding: 18px 24px 12px; scroll-behavior: smooth; }
+.chat-container { width: 100%; max-width: 850px; margin: 0 auto; }
+
+/* WELCOME */
+.welcome { text-align: center; max-width: 700px; margin: 0 auto; }
+.welcome-icon { width: 44px; height: 44px; display: grid; place-items: center; margin: 0 auto 12px; border-radius: 15px; border: 1px solid #d5a88b; background: linear-gradient(145deg,#bd805b,#966044); color: white; font-size: 21px; box-shadow: 0 12px 35px rgba(150,96,68,.12); }
+.welcome h1 { font-family: 'Manrope', sans-serif; font-size: clamp(22px,2.6vw,29px); font-weight: 800; letter-spacing: -.045em; margin: 0 0 8px; color: var(--text); }
+.welcome h1 span { background: linear-gradient(90deg,#b97852,#966044); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.welcome p { max-width: 500px; margin: 0 auto; font-size: 12px; line-height: 1.6; color: var(--muted); }
+.suggestion-title { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 10px; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .09em; text-align: left; }
+.shuffle { padding: 8px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--panel); color: var(--accent); font-size: 11px; font-weight: 700; transition: .2s; }
+.shuffle:hover { background: var(--soft); border-color: #d9b59d; }
+
+/* SUGGESTIONS */
+.suggestions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; }
+.suggestion { min-height: 0; padding: 11px 13px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); color: var(--text); text-align: left; font-size: 12px; line-height: 1.45; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; transition: .2s ease; }
+.suggestion:hover { border-color: #c99574; background: #fff6ef; transform: translateY(-2px); box-shadow: 0 7px 20px rgba(110,75,53,.05); }
+.suggestion > span { color: var(--accent); font-size: 13px; }
+.suggestion small { font-size: 10px; color: #a18470; }
+
+/* CHAT MESSAGES */
+.message { display: flex; align-items: flex-start; gap: 12px; margin: 22px 0; animation: messageIn .25s ease; }
+@keyframes messageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.message-icon { width: 34px; height: 34px; min-width: 34px; border-radius: 11px; display: grid; place-items: center; font-size: 15px; font-weight: 800; }
+.ai-icon { background: linear-gradient(135deg,#bd805b,#966044); color: white; }
+.user-icon { background: #ead8ca; color: #79533d; }
+.message-content { flex: 1; min-width: 0; }
+.message-name { font-size: 11px; font-weight: 800; color: #987e6d; margin: 2px 0 7px; }
+.message-bubble { display: inline-block; max-width: 100%; padding: 13px 16px; border: 1px solid var(--border); border-radius: 4px 13px 13px 13px; background: var(--panel); color: var(--text); font-size: 13px; line-height: 1.8; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message.user .message-bubble { background: #f2dfd1; border-color: #e4c5ad; border-radius: 13px 4px 13px 13px; }
+
+/* SOURCES */
+.sources { margin-top: 15px; width: 100%; }
+.sources-heading { margin-bottom: 10px; color: #987e6d; font-size: 10px; font-weight: 800; letter-spacing: .09em; }
+.source-card { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 8px; border: 1px solid #e7d1c1; border-radius: 10px; background: #f8eee7; }
+.source-info { min-width: 0; }
+.source-title { font-size: 11px; font-weight: 700; color: #684b39; overflow-wrap: anywhere; }
+.source-video { font-size: 10px; margin-top: 5px; color: #987e6d; }
+.source-time { flex-shrink: 0; padding: 6px 9px; border-radius: 7px; background: #f0dfd2; color: #a66d50; font-size: 10px; font-weight: 700; }
+
+/* TYPING */
+.typing { display: flex; align-items: center; gap: 5px; padding: 10px 3px; }
+.typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: typing 1s infinite ease-in-out; }
+.typing span:nth-child(2) { animation-delay: .15s; }
+.typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes typing { 0%,60%,100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+/* INPUT AREA */
+.input-section { flex-shrink: 0; padding: 10px 24px; background: linear-gradient(transparent,var(--bg) 25%); }
+.input-container { max-width: 850px; margin: 0 auto; }
+.input-box { display: flex; align-items: flex-end; gap: 10px; padding: 10px 11px 10px 17px; border: 1px solid #e1cdbd; border-radius: 15px; background: var(--panel); box-shadow: var(--shadow); transition: .2s ease; }
+.input-box:focus-within { border-color: #c99574; box-shadow: 0 0 0 3px rgba(185,120,82,.09); }
+textarea { flex: 1; min-width: 0; max-height: 130px; min-height: 26px; padding: 5px 0; resize: none; outline: none; border: 0; background: transparent; color: var(--text); font-size: 13px; line-height: 1.6; }
+textarea::placeholder { color: #a18b7c; }
+.send-btn { width: 37px; height: 37px; flex-shrink: 0; border: 0; border-radius: 11px; background: linear-gradient(135deg,#bd805b,#a66d50); color: white; font-size: 21px; font-weight: 700; transition: .2s; }
+.send-btn:hover { box-shadow: 0 5px 18px rgba(185,120,82,.22); transform: translateY(-1px); }
+.input-hint { margin-top: 7px; text-align: center; font-size: 10px; line-height: 1.7; color: #987e6d; }
+
+/* OTHER PAGES */
+.page { flex: 1; overflow-y: auto; padding: 42px 30px; }
+.page-in { max-width: 900px; margin: 0 auto; }
+.page h2 { font-family: 'Manrope',sans-serif; font-size: 27px; letter-spacing: -.04em; margin: 0 0 10px; color: var(--text); }
+.lead { max-width: 650px; margin: 0 0 30px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; }
+.card { padding: 21px; border: 1px solid var(--border); border-radius: 14px; background: var(--card); }
+.card h3 { margin: 0 0 12px; color: #a66d50; font-size: 14px; }
+.card p, .card li { color: #725c4e; font-size: 12px; line-height: 1.8; }
+.card ul { padding-left: 18px; }
+.card a { color: #a66d50; font-weight: 700; }
+.card code { padding: 2px 5px; border-radius: 4px; background: var(--chip); color: var(--accent-dark); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 7px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--chip); color: #725c4e; font-size: 11px; }
+.note { margin-top: 18px; padding: 15px 17px; border: 1px solid var(--border); border-radius: 11px; background: var(--chip); color: #725c4e; font-size: 12px; line-height: 1.7; }
+
+/* SCROLLBARS */
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d8bda9; border-radius: 20px; }
+::-webkit-scrollbar-thumb:hover { background: #bd967a; }
+
+/* RESPONSIVE */
+@media(max-width:850px) {
+    .sidebar { width: 230px; min-width: 230px; }
+    .topbar { padding: 0 20px; }
+    .tabs { padding: 0 18px; }
+    .chat-area { padding: 16px 18px 10px; }
+}
+
+@media(max-width:650px) {
+    body { overflow: hidden; }
+    .sidebar { position: fixed; top: 0; bottom: 0; left: 0; width: 265px; min-width: 265px; height: 100dvh; transform: translateX(-105%); box-shadow: 15px 0 40px rgba(90,60,40,.13); }
+    .sidebar.open { transform: translateX(0); }
+    .main { width: 100%; }
+    .topbar { height: 68px; min-height: 68px; padding: 0 14px; }
+    .mobile-menu { display: block; }
+    .page-heading { font-size: 14px; }
+    .page-subtitle { font-size: 10px; }
+    .model-badge { display: none; }
+    .tabs { height: 53px; min-height: 53px; padding: 0 8px; gap: 0; overflow-x: auto; }
+    .tab { padding: 0 12px; white-space: nowrap; font-size: 11px; }
+    .chat-area { padding: 14px 12px 8px; }
+    .welcome h1 { font-size: 22px; }
+    .welcome p { font-size: 12px; }
+    .suggestions { grid-template-columns: 1fr; gap: 8px; }
+    .suggestion:nth-child(n+3) { display: none; }
+    .suggestion-title { margin-top: 16px; font-size: 9px; }
+    .input-section { padding: 8px 12px; }
+    .input-hint { font-size: 9px; }
+    .cards { grid-template-columns: 1fr; }
+    .page { padding: 27px 16px; }
+    .page h2 { font-size: 23px; }
+}
+
+/* short screens: hide the intro paragraph so nothing needs scrolling */
+@media(max-height:760px) {
+    .welcome p { display: none; }
+    .suggestion-title { margin-top: 16px; }
+}
+
+@media(max-height:650px) {
+    .welcome-icon { width: 38px; height: 38px; margin-bottom: 8px; font-size: 18px; }
+    .welcome h1 { font-size: 21px; margin-bottom: 4px; }
+    .suggestion-title { margin: 12px 0 8px; }
+}
+
+/* LIGHT / DARK MODE BUTTON */
+.theme-toggle { width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 50%; background: #f6eee8; color: #a66d50; font-size: 19px; display: grid; place-items: center; cursor: pointer; transition: .25s ease; }
+.theme-toggle:hover { transform: rotate(15deg); background: #f2dfd1; }
+
+/* DARK THEME: night-sky black, peach accent kept */
+body.dark-mode {
+    --bg: #090b12;
+    --sidebar: #0d1019;
+    --panel: #11151f;
+    --card: #11151f;
+    --chip: #171c29;
+    --soft: #2a231f;
+    --border: #212737;
+    --text: #ebe6ee;
+    --muted: #8d93a7;
+    --accent: #d69a70;
+    --accent-dark: #e0a77f;
+    background: var(--bg);
+    color: var(--text);
+}
+
+body.dark-mode .main { background: radial-gradient(ellipse at 78% -5%,rgba(80,100,175,.13),transparent 50%), radial-gradient(ellipse at 10% 105%,rgba(214,154,112,.04),transparent 45%), var(--bg); }
+body.dark-mode .sidebar { background: var(--sidebar); border-color: var(--border); }
+body.dark-mode .topbar, body.dark-mode .tabs { background: var(--panel); border-color: var(--border); }
+body.dark-mode .system-card, body.dark-mode .card, body.dark-mode .suggestion, body.dark-mode .shuffle, body.dark-mode .input-box { background: var(--panel); border-color: var(--border); color: var(--text); }
+body.dark-mode .input-box { box-shadow: 0 8px 28px rgba(0,0,0,.35); }
+body.dark-mode .input-box:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(214,154,112,.10); }
+body.dark-mode .new-chat, body.dark-mode .model-badge { background: var(--chip); border-color: var(--border); color: var(--accent); }
+body.dark-mode .new-chat { border-color: rgba(214,154,112,.35); }
+body.dark-mode .new-chat:hover { background: var(--soft); }
+body.dark-mode .tab { color: var(--muted); }
+body.dark-mode .tab:hover { color: var(--text); background: rgba(214,154,112,.08); }
+body.dark-mode .tab.active { color: var(--accent); background: var(--soft); }
+body.dark-mode .message-bubble { background: var(--panel); border-color: var(--border); color: var(--text); }
+body.dark-mode .message.user .message-bubble { background: #1a2033; border-color: #2a3350; color: var(--text); }
+body.dark-mode .user-icon { background: #1d2335; color: #e0a77f; }
+body.dark-mode .message-name, body.dark-mode .sources-heading, body.dark-mode .sidebar-footer, body.dark-mode .input-hint, body.dark-mode .source-video { color: var(--muted); }
+body.dark-mode .source-card, body.dark-mode .note { background: var(--chip); border-color: var(--border); }
+body.dark-mode .source-title, body.dark-mode .card p, body.dark-mode .card li, body.dark-mode .note { color: #d9d6e2; }
+body.dark-mode .source-time { background: var(--soft); color: var(--accent); }
+body.dark-mode .card h3, body.dark-mode .card a, body.dark-mode .card code { color: var(--accent); }
+body.dark-mode .chip { background: var(--chip); border-color: var(--border); color: var(--text); }
+body.dark-mode textarea::placeholder { color: var(--muted); }
+body.dark-mode .suggestion small { color: #7d8397; }
+body.dark-mode .suggestion:hover, body.dark-mode .shuffle:hover { background: #181d2b; border-color: var(--accent); }
+body.dark-mode .theme-toggle { background: var(--chip); border-color: var(--border); color: #f2c28e; }
+body.dark-mode .theme-toggle:hover { background: var(--soft); }
+body.dark-mode ::-webkit-scrollbar-thumb { background: #2a3145; }
+body.dark-mode ::-webkit-scrollbar-thumb:hover { background: #3a4260; }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="brand-icon">✦</div>
+        <div>
+            <div class="brand-name">SCHOLARIS AI</div>
+            <div class="brand-sub">INTELLIGENT LEARNING</div>
+        </div>
+    </div>
+
+    <button class="new-chat" id="newChat"><span>＋</span> New Conversation</button>
+
+    <div class="sidebar-bottom">
+        <div class="system-card">
+            <div class="system-title">AI SYSTEM</div>
+            <div class="system-status"><span class="status-dot"></span> RAG Engine Ready</div>
+            <div class="system-status" style="margin-top:10px"><span class="status-dot"></span> Google Gemini API</div>
+        </div>
+
+        <div class="sidebar-footer">
+            SCHOLARIS AI © 2026
+            <br><br>
+            Powered by Retrieval-Augmented Generation
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+    <header class="topbar">
+        <div style="display:flex;align-items:center;gap:12px">
+            <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+            <div>
+                <div class="page-heading">Academic Assistant</div>
+                <div class="page-subtitle">Your intelligent learning companion</div>
+            </div>
+        </div>
+
+        <div class="top-right">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Switch theme">
+                <span id="themeIcon">☾</span>
+            </button>
+            <div class="model-badge">✦ Gemini Flash-Lite</div>
+            <div class="avatar">S</div>
+        </div>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="tabs" id="tabs" aria-label="Sections">
+        <button class="tab active" data-view="home"><span class="tab-ico">⌂</span>Home</button>
+        <button class="tab" data-view="models"><span class="tab-ico">◈</span>Models</button>
+        <button class="tab" data-view="about"><span class="tab-ico">ⓘ</span>About</button>
+        <button class="tab" data-view="developer"><span class="tab-ico">✦</span>Developer</button>
+    </nav>
+
+    <!-- HOME -->
+    <div class="view active" id="view-home">
+
+        <section class="chat-area" id="chatArea">
+            <div class="chat-container" id="chatContainer">
+
+                <div class="welcome" id="welcome">
+                    <div class="welcome-icon">✦</div>
+
+                    <h1>Welcome to <span>Scholaris AI</span></h1>
+
+                    <p>
+                        Your personal AI teaching assistant. Ask questions,
+                        explore concepts, and learn directly from your
+                        academic course materials.
+                    </p>
+
+                    <div class="suggestion-title">
+                        <span>QUESTIONS FROM YOUR COURSE VIDEOS</span>
+                        <button class="shuffle" type="button">↻ Shuffle</button>
+                    </div>
+
+                    <div class="suggestions" id="suggestions"></div>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="input-section">
+            <div class="input-container">
+                <div class="input-box">
+                    <textarea id="questionInput" rows="1" placeholder="Ask Scholaris anything about your course..." aria-label="Ask a question"></textarea>
+                    <button class="send-btn" id="sendBtn" title="Send message" aria-label="Send message">↑</button>
+                </div>
+
+                <div class="input-hint">
+                    Scholaris AI can make mistakes. Verify important academic information.
+                    <br>
+                    Press Enter to send · Shift + Enter for a new line
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODELS -->
+    <div class="view" id="view-models">
+        <div class="page">
+            <div class="page-in">
+                <h2>Inside the assistant</h2>
+
+                <p class="lead">
+                    Scholaris answers from your course videos instead of guessing.
+                    Here is what runs behind each reply.
+                </p>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Answer model</h3>
+                        <p>Google Gemini (<code>gemini-3.5-flash-lite</code>) writes the reply. It is told to use only the retrieved course content, keep answers short, and cite the video and time for each point.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Embedding model</h3>
+                        <p><code>gemini-embedding-001</code> turns text into 768-number vectors. Course chunks are embedded as documents and your question is embedded as a query.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Retrieval (RAG)</h3>
+                        <p>Your question's vector is compared with all 1,467 transcript chunks using cosine similarity. The 5 closest chunks are passed to the model as context.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Course data</h3>
+                        <p>18 Sigma Web Development videos, from installing VS Code to the CSS box model, split into timestamped chunks and stored in a joblib file that loads when the server starts.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Sources</h3>
+                        <p>Each answer lists the video number, title and time range of the passages it was built from, so you can go back and watch that part.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Backend</h3>
+                        <p>A Flask server receives your question at the <code>/ask</code> route and returns the answer with its sources.</p>
+                    </div>
+                </div>
+
+                <div class="note">Answers can still be wrong. Check important facts against the cited video.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="view" id="view-about">
+        <div class="page">
+            <div class="page-in">
+                <h2>Learn from your own course</h2>
+
+                <p class="lead">
+                    Scholaris AI is a teaching assistant that answers
+                    questions using your academic course materials.
+                </p>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Objective</h3>
+                        <p>Give students quick, clear answers from their course content, with a pointer back to where each answer came from.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>How it works</h3>
+                        <ul>
+                            <li>1. You ask a question</li>
+                            <li>2. Gemini turns it into an embedding vector</li>
+                            <li>3. The 5 closest course passages are found</li>
+                            <li>4. Gemini writes a short answer from only those passages</li>
+                            <li>5. The video and time range of each passage are shown</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <h3>Technology</h3>
+                        <p>HTML, CSS and JavaScript on the front end. Python and Flask on the back end, with NumPy, pandas and scikit-learn for retrieval. Google Gemini handles embeddings and answers.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Good to know</h3>
+                        <p>It only knows the 18 course videos. Unrelated questions get a short reply saying it can only help with course questions. Answers are brief, about 4 to 5 points.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVELOPER -->
+    <div class="view" id="view-developer">
+        <div class="page">
+            <div class="page-in">
+                <h2>Shreyas Satish Mandole</h2>
+
+                <p class="lead">
+                    B.E. Computer Science student building practical skills
+                    in machine learning and Python applications.
+                </p>
+
+                <div class="cards">
+                    <div class="card" style="grid-column:1/-1">
+                        <h3>Skills</h3>
+                        <div class="chips">
+                            <span class="chip">Python</span>
+                            <span class="chip">Machine Learning</span>
+                            <span class="chip">Flask</span>
+                            <span class="chip">SQL</span>
+                            <span class="chip">Pandas</span>
+                            <span class="chip">NumPy</span>
+                            <span class="chip">Scikit-learn</span>
+                            <span class="chip">Gemini API</span>
+                            <span class="chip">RAG</span>
+                            <span class="chip">HTML &amp; CSS</span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>This project</h3>
+                        <p>Scholaris AI: a course teaching assistant built with Flask, Gemini embeddings and retrieval over 18 course videos.</p>
+                    </div>
+
+                    <div class="card">
+                        <h3>Other project</h3>
+                        <p>
+                            <a href="https://bangalore-house-price-prediction-1-wvw3.onrender.com" target="_blank" rel="noopener">HomeScope</a>:
+                            a Bangalore house price estimator built with Flask and Ridge Regression.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+</div>
+
+<script>
+const questionInput = document.getElementById("questionInput");
+const sendBtn = document.getElementById("sendBtn");
+const chatContainer = document.getElementById("chatContainer");
+const chatArea = document.getElementById("chatArea");
+const sidebar = document.getElementById("sidebar");
+const tabs = document.getElementById("tabs");
+
+const welcomeHTML = document.getElementById("welcome").outerHTML;
+
+/* QUESTIONS FROM COURSE TRANSCRIPTS */
+
+const QUESTIONS = [
+    [1,"Installing VS Code & How Websites Work",[
+        "How does a website work?",
+        "Why do we use VS Code for writing HTML?"
+    ]],
+    [2,"Your First HTML Website",[
+        "How do I link CSS and JavaScript to an HTML file?",
+        "How do I change the theme in VS Code?"
+    ]],
+    [3,"Basic Structure of an HTML Website",[
+        "What is the basic structure of an HTML page?",
+        "How can I preview my website on my phone using my IPv4 address?"
+    ]],
+    [4,"Headings, Paragraphs & Links",[
+        "How do the heading tags H1 to H3 work?",
+        "What are attributes in HTML?"
+    ]],
+    [5,"Image, Lists & Tables",[
+        "What are the different types of lists in HTML?",
+        "Why should I set width and height on images?"
+    ]],
+    [6,"SEO & Core Web Vitals",[
+        "What is SEO and why does it matter?",
+        "How do the title and meta description help SEO?"
+    ]],
+    [7,"Forms & input tags",[
+        "What is the difference between a radio button and a checkbox?",
+        "What do the placeholder and required attributes do?"
+    ]],
+    [8,"Inline & Block Elements",[
+        "What is the difference between inline and block elements?",
+        "How are div and span different?"
+    ]],
+    [9,"Id & Classes",[
+        "What is the difference between id and class?",
+        "Can one element have more than one class?"
+    ]],
+    [10,"Video, Audio & Media",[
+        "How do I add a video to an HTML page?",
+        "What does the preload attribute do for audio?"
+    ]],
+    [11,"Semantic Tags",[
+        "What are semantic tags and why should I use them?",
+        "What are header, nav, article and section used for?"
+    ]],
+    [12,"Exercise 1: Pure HTML Media Player",[
+        "What is the challenge exercise given in this video?",
+        "How can I get a shoutout for solving the exercise?"
+    ]],
+    [13,"Entities, Code tag & more",[
+        "What are HTML entities?",
+        "Which HTML tags are obsolete?"
+    ]],
+    [14,"Introduction to CSS",[
+        "What is a CSS selector and how is CSS written?",
+        "What is CSS and why do we need it?"
+    ]],
+    [15,"Inline, Internal & External CSS",[
+        "What are the three ways to add CSS to a page?",
+        "When should I use external CSS instead of inline CSS?"
+    ]],
+    [16,"Exercise 1: Solution & Shoutouts",[
+        "How was the exercise solved?",
+        "What does the controls attribute do on a video tag?"
+    ]],
+    [17,"CSS Selectors MasterClass",[
+        "What are the most used CSS selectors?",
+        "How do I change a link's background on hover?"
+    ]],
+    [18,"CSS Box Model",[
+        "What is the CSS box model?",
+        "How are margin, padding and border different?"
+    ]]
+];
+
+const ICONS = ["⌘","◈","⚡","▤"];
+
+function renderSuggestions() {
+    const box = document.getElementById("suggestions");
+    if (!box) return;
+
+    box.innerHTML = "";
+
+    [...QUESTIONS]
+        .sort(() => Math.random() - .5)
+        .slice(0,4)
+        .forEach(([video,title,questions],index) => {
+            const question = questions[Math.floor(Math.random() * questions.length)];
+
+            const button = document.createElement("button");
+            button.className = "suggestion";
+            button.dataset.question = question;
+
+            const icon = document.createElement("span");
+            icon.textContent = ICONS[index];
+
+            const small = document.createElement("small");
+            small.textContent = "Video " + video + " · " + title;
+
+            button.append(icon, document.createTextNode(question), small);
+            box.appendChild(button);
+        });
+}
+
+renderSuggestions();
+
+let isLoading = false;
+
+/* NAVIGATION */
+
+function showView(name) {
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.classList.toggle("active",tab.dataset.view === name);
+    });
+
+    document.querySelectorAll(".view").forEach(view => {
+        view.classList.toggle("active",view.id === "view-" + name);
+    });
+
+    sidebar.classList.remove("open");
+}
+
+tabs.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click",() => showView(tab.dataset.view));
+});
+
+/* CHAT SCROLL */
+
+function scrollToBottom() {
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+/* MESSAGE BUILDER */
+
+function buildMessage(type,nameText,bubbleChild) {
+    const message = document.createElement("div");
+    message.className = "message " + type;
+
+    const icon = document.createElement("div");
+    icon.className = "message-icon " + (type === "user" ? "user-icon" : "ai-icon");
+    icon.textContent = type === "user" ? "S" : "✦";
+
+    const content = document.createElement("div");
+    content.className = "message-content";
+
+    const name = document.createElement("div");
+    name.className = "message-name";
+    name.textContent = nameText;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    bubble.appendChild(bubbleChild);
+
+    content.append(name,bubble);
+    message.append(icon,content);
+    chatContainer.appendChild(message);
+
+    scrollToBottom();
+
+    return {message,content};
+}
+
+function addMessage(text,type) {
+    return buildMessage(
+        type,
+        type === "user" ? "You" : "Scholaris AI",
+        document.createTextNode(text)
+    ).content;
+}
+
+/* KNOWLEDGE SOURCES */
+
+function addSources(content,sources) {
+    if (!Array.isArray(sources) || !sources.length) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "sources";
+
+    const heading = document.createElement("div");
+    heading.className = "sources-heading";
+    heading.textContent = "▤ KNOWLEDGE SOURCES";
+
+    wrapper.appendChild(heading);
+
+    sources.forEach(source => {
+        const card = document.createElement("div");
+        card.className = "source-card";
+
+        const info = document.createElement("div");
+        info.className = "source-info";
+
+        const title = document.createElement("div");
+        title.className = "source-title";
+        title.textContent = source.title || "Course Material";
+
+        const video = document.createElement("div");
+        video.className = "source-video";
+        video.textContent = source.video ? "Video " + source.video : "Course video";
+
+        const time = document.createElement("div");
+        time.className = "source-time";
+        time.textContent = source.time || "";
+
+        info.append(title,video);
+        card.append(info,time);
+        wrapper.appendChild(card);
+    });
+
+    content.appendChild(wrapper);
+    scrollToBottom();
+}
+
+/* TYPING INDICATOR */
+
+function showTyping() {
+    const typing = document.createElement("div");
+    typing.className = "typing";
+
+    for (let i = 0; i < 3; i++) {
+        typing.appendChild(document.createElement("span"));
+    }
+
+    buildMessage("","Scholaris AI is thinking",typing).message.id = "typingMessage";
+}
+
+function removeTyping() {
+    const typing = document.getElementById("typingMessage");
+    if (typing) typing.remove();
+}
+
+/* SEND QUESTION TO FLASK */
+
+async function sendQuestion(custom = null) {
+    const question = (custom !== null ? custom : questionInput.value).trim();
+
+    if (!question || isLoading) return;
+
+    const welcome = document.getElementById("welcome");
+    if (welcome) welcome.remove();
+
+    isLoading = true;
+    sendBtn.disabled = true;
+
+    addMessage(question,"user");
+
+    questionInput.value = "";
+    questionInput.style.height = "auto";
+
+    showTyping();
+
+    try {
+        const response = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({question})
+        });
+
+        if (!response.ok) {
+            throw new Error("Server error: " + response.status);
+        }
+
+        const data = await response.json();
+
+        removeTyping();
+
+        const answerContent = addMessage(
+            data.answer || "Sorry, I couldn't generate an answer.",
+            "ai"
+        );
+
+        addSources(answerContent,data.sources);
+
+    } catch(error) {
+        removeTyping();
+
+        addMessage(
+            "I'm unable to connect to the AI service right now. Please check your Flask server and AI service, then try again.\n\nError: " + error.message,
+            "ai"
+        );
+
+        console.error("Scholaris AI Error:",error);
+
+    } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+        questionInput.focus();
+        scrollToBottom();
+    }
+}
+
+/* INPUT RESIZE */
+
+questionInput.addEventListener("input",function() {
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight,130) + "px";
+});
+
+/* EVENT LISTENERS */
+
+sendBtn.addEventListener("click",() => sendQuestion());
+
+questionInput.addEventListener("keydown",event => {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendQuestion();
+    }
+});
+
+chatContainer.addEventListener("click",event => {
+    if (event.target.closest(".shuffle")) {
+        renderSuggestions();
+        return;
+    }
+
+    const suggestion = event.target.closest(".suggestion");
+
+    if (suggestion) {
+        sendQuestion(suggestion.dataset.question);
+    }
+});
+
+/* NEW CONVERSATION */
+
+document.getElementById("newChat").addEventListener("click",() => {
+    if (isLoading) return;
+
+    chatContainer.innerHTML = welcomeHTML;
+
+    renderSuggestions();
+
+    questionInput.value = "";
+    questionInput.style.height = "auto";
+
+    showView("home");
+    chatArea.scrollTop = 0;
+});
+
+/* MOBILE SIDEBAR */
+
+document.getElementById("mobileMenu").addEventListener("click",event => {
+    event.stopPropagation();
+    sidebar.classList.toggle("open");
+});
+
+document.addEventListener("click",event => {
+    if (
+        window.innerWidth <= 650 &&
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) &&
+        !event.target.closest("#mobileMenu")
+    ) {
+        sidebar.classList.remove("open");
+    }
+});
+
+window.addEventListener("resize",() => {
+    if (window.innerWidth > 650) {
+        sidebar.classList.remove("open");
+    }
+});
+
+/* DARK / LIGHT THEME SWITCH */
+
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+
+function setTheme(mode) {
+    const isDark = mode === "dark";
+
+    document.body.classList.toggle("dark-mode", isDark);
+
+    themeIcon.textContent = isDark ? "☀" : "☾";
+
+    themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    themeToggle.title = isDark ? "Switch to light mode" : "Switch to dark mode";
+
+    localStorage.setItem("scholaris-theme", mode);
+}
+
+themeToggle.addEventListener("click", () => {
+    setTheme(document.body.classList.contains("dark-mode") ? "light" : "dark");
+});
+
+/* Restore saved preference */
+
+setTheme(localStorage.getItem("scholaris-theme") || "light");
+</script>
+</body>
+</html>
